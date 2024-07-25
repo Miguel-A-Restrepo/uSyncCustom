@@ -35,6 +35,8 @@ namespace uSync.BackOffice.Controllers
         /// SyncActions to use as the source for all individual actions
         /// </summary>
         public IEnumerable<uSyncAction> Actions { get; set; }
+        public int LowerLimit { get; set; }
+        public int Jump { get; set; }
 
     }
 }

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using NUglify.Helpers;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -13,6 +16,9 @@ namespace uSync.BackOffice
 
     public partial class uSyncService
     {
+
+        private IEnumerable<string> ItemsContent { get; set; }
+
         /// <summary>
         ///  Run a report for a given handler 
         /// </summary>
@@ -33,25 +39,49 @@ namespace uSync.BackOffice
         /// <summary>
         ///  run an import for a given handler 
         /// </summary>
-        public IEnumerable<uSyncAction> ImportHandler(string handlerAlias, uSyncImportOptions options)
+        public IEnumerable<uSyncAction> ImportHandler(string handlerAlias, uSyncImportOptions options, int lowerLimit, int jump)
         {
 
             lock (_importLock)
             {
                 using (var pause = _mutexService.ImportPause())
                 {
-                    var handlerPair = _handlerFactory.GetValidHandler(handlerAlias, new SyncHandlerOptions
-                    {
-                        Set = options.HandlerSet,
-                        Action = HandlerActions.Import
-                    });
+                    
+                        var handlerPair = _handlerFactory.GetValidHandler(handlerAlias, new SyncHandlerOptions
+                        {
+                            Set = options.HandlerSet,
+                            Action = HandlerActions.Import
+                        });
 
-                    if (handlerPair == null) return Enumerable.Empty<uSyncAction>();
-                    var folder = GetHandlerFolder(options.RootFolder, handlerPair.Handler);
+                        if (handlerPair == null) return Enumerable.Empty<uSyncAction>();
+                        var folder = GetHandlerFolder(options.RootFolder, handlerPair.Handler);
 
-                    return handlerPair.Handler.ImportAll(folder, handlerPair.Settings,
-                        options.Flags.HasFlag(SerializerFlags.Force),
-                        options.Callbacks?.Update);
+                        if (handlerAlias == "ContentHandler")
+                        {
+                            if (this.ItemsContent == null || !this.ItemsContent.Any())
+                            {
+                                this.ItemsContent = _syncFileService.GetFiles(folder, "");
+                            }
+                            IEnumerable<string> truncatedList = this.ItemsContent.Skip(lowerLimit).Take(jump);
+                            truncatedList.ForEach(item =>
+                            {
+                                try
+                                {
+                                    var result = handlerPair.Handler.Import(item, handlerPair.Settings, false);
+                                }
+                                catch (Exception ex)
+                                {
+                                    
+                                }
+                            });
+                            return truncatedList.Count() < jump ?  Enumerable.Empty<uSyncAction>() : null ;
+                        }
+                        else
+                        {
+                            return handlerPair.Handler.ImportAll(folder, handlerPair.Settings,
+                                                       options.Flags.HasFlag(SerializerFlags.Force),
+                                                       options.Callbacks?.Update);
+                        }
                 }
             }
         }

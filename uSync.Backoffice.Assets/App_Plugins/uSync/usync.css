@@ -32,8 +32,8 @@
 
 ul.usync-action-list {
     display: inline-block;
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
 }
 
     ul.usync-action-list li {
@@ -82,9 +82,9 @@ ul.usync-action-list {
         color: #2e7d32
     }
 
-.usync-item-details .umb-table-cell {
-    margin-top: 10px;
-}
+    .usync-item-details .umb-table-cell {
+        margin-top: 10px;
+    }
 
     .usync-item-details .umb-table-row {
         align-items: flex-start;
@@ -157,6 +157,7 @@ ul.usync-action-list {
     .usync-handler-icon.usync-complete {
         color: #1b264f;
     }
+
         .usync-handler-icon.usync-complete .usync-addon-icon {
             color: #7b1fa2;
         }
@@ -215,9 +216,9 @@ ul.usync-action-list {
         background-color: #ff5722;
     }
 
-.usync-not-animated .bar {
-    transition: none;
-}
+    .usync-not-animated .bar {
+        transition: none;
+    }
 
 .usync-box {
     max-width: 100%;
@@ -351,9 +352,9 @@ ul.usync-action-list {
     min-width: 120px;
 }
 
-.usync-detail-link-cell .btn {
-    padding: 6px;
-}
+    .usync-detail-link-cell .btn {
+        padding: 6px;
+    }
 
 .usync-main-progress {
     margin: 0 -20px -20px -20px;
@@ -371,9 +372,10 @@ ul.usync-action-list {
     margin: 50px 0;
     text-align: center;
 }
-.usync-report-no-changes h4 {
-    font-weight: 700;
-}
+
+    .usync-report-no-changes h4 {
+        font-weight: 700;
+    }
 
 /* diff view */
 .umb-table-cell.usync-diff-value > * {
@@ -446,9 +448,9 @@ ul.usync-action-list {
     pointer-events: none;
 }
 
-.usync-fresh-view .umb-empty-state {
-    color: #ddd;
-}
+    .usync-fresh-view .umb-empty-state {
+        color: #ddd;
+    }
 
 
 .usync-setting-value {
@@ -465,9 +467,9 @@ ul.usync-action-list {
         font-weight: 700;
     }
 
-.usync-setting-value:last-child {
-    border-bottom: none;
-}
+    .usync-setting-value:last-child {
+        border-bottom: none;
+    }
 
 .usync-warning {
     text-align: center;
@@ -530,4 +532,62 @@ ul.usync-action-list {
 
 .umb-overlay.umb-overlay-center.umb-overlay--usync-error {
     width: 720px
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+#dialog {
+    display: none;
+    position: relative;
+    top: 20px;
+    left: 0px;
+    width: 40%;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    background-color: white;
+    z-index: 1000;
+}
+
+.warning {
+    color: red;
+    font-weight: bold;
+}
+
+#dialog p {
+    font-weight: 600;
+}
+
+#dialog input[type="number"] {
+    width: 100px;
+    border-radius: 5px;
+}
+
+.dialog-button {
+    margin: 5px;
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin: 0px;
+    flex-wrap: wrap;
+}
+
+.dialog-button button {
+    padding: 3px;
+}
+
+@media (max-width: 768px) {
+    #dialog {
+        min-width: 90%;
+    }
 }

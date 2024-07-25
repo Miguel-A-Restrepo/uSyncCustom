@@ -63,8 +63,8 @@
     <umb-box ng-if="!vm.showSpinner && (vm.working || vm.reported)">
         <umb-box-content class="usync-progress-box">
             <div ng-if="vm.savings.show || vm.perf > 0"
-                  class="text-right muted usync-perf">
-                <span ng-if="vm.savings.show">{{vm.savings.title}} {{vm.savings.message}} <br/></span>
+                 class="text-right muted usync-perf">
+                <span ng-if="vm.savings.show">{{vm.savings.title}} {{vm.savings.message}} <br /></span>
                 <i ng-if="vm.perf > 0">(in {{vm.perf | number : 0}}ms)</i>
             </div>
             <usync-progress-view update="vm.update" status="vm.status" hide-labels="false">
@@ -100,5 +100,15 @@
         </umb-empty-state>
     </div>
 
+    <div id="overlay" class="overlay-container"></div>
+    <div id="dialog" class=" dialog-container">
+        <p>Are you sure? You entered the number of files you want to sync per call</p>
+        <p class="warning">WARNING! This action cannot be undone</p>
 
+        <div class="dialog-button">
+            <input type="number" id="numberInput" step="1" ng-model="numberInput" ng-change="validateInput()" />
+            <button ng-click="confirm()" ng-disabled="!isValid || isButtonDisabled">Confirm</button>
+            <button ng-click="cancel()">Cancel</button>
+        </div>
+    </div>
 </div>

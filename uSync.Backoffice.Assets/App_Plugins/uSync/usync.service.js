@@ -154,13 +154,31 @@
             });
         }
 
-        function importHandler(handler, options, clientId) {
-            return $http.post(serviceRoot + 'ImportHandler', {
-                handler: handler,
-                clientId: clientId,
-                force: options.force,
-                set: options.set
-            });
+        function importHandler(handler, options, clientId, lowerLimit = 0, jump = 0) {
+            if (handler == "ContentHandler") {
+                var response = await $http.post(serviceRoot + 'ImportHandler', {
+                    handler: handler,
+                    clientId: clientId,
+                    force: options.force,
+                    set: options.set,
+                    lowerLimit: lowerLimit,
+                    jump: jump
+                });
+                if (response == null) {
+                    importHandler((handler, options, clientId, lowerLimit + jump, jump))
+                } else {
+                    return new Promise((resolve, reject) => {
+                        resolve(response);
+                    });
+                }
+            } else {
+                return $http.post(serviceRoot + 'ImportHandler', {
+                    handler: handler,
+                    clientId: clientId,
+                    force: options.force,
+                    set: options.set
+                });
+            }
         }
 
         function importPost(actions, options, clientId) {

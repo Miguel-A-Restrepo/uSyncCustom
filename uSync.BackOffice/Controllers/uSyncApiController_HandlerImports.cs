@@ -89,7 +89,9 @@ namespace uSync.BackOffice.Controllers
                 HandlerSet = handlerSet,
                 RootFolder = uSyncConfig.GetRootFolder(),
                 Flags = options.Force ? Core.Serialization.SerializerFlags.Force : Core.Serialization.SerializerFlags.None
-            });
+            },
+            options.LowerLimit,
+            options.Jump);
 
             return new SyncActionResult(actions);
         }

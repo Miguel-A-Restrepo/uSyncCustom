@@ -172,7 +172,7 @@
                     vm.status.message = handler.name;
 
                     handler.status = 1;
-                    actionMethod(handler.alias, options, getClientId())
+                    actionMethod(handler.alias, options, getClientId(), 0, $scope.numberInput)
                         .then(function (result) {
 
                             vm.results = vm.results.concat(result.data.actions);
@@ -616,7 +616,64 @@
                 });
         }
 
+        function load() {
+            $scope.isValid = false;
+        }
 
+        function importUsyncContent() {
+            sendRequest(0, $scope.numberInput);
+        }
+
+        async function sendRequest(lowerLimit, jump) {
+            fetch('/configuration/api/v1/importcontent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    lowerLimit: lowerLimit,
+                    jump: jump
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && !data.result.result) {
+                        sendRequest(lowerLimit + jump, jump);
+                    } else {
+                        console.log('import success');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error importing uSync content:', error);
+                });
+        }
+
+        load();
+
+        $scope.showConfirm = function () {
+            document.getElementById('dialog').style.display = 'block';
+        };
+
+        $scope.confirm = function () {
+            if ($scope.isValid) {
+                document.getElementById('dialog').style.display = 'none';
+                importUsyncContent();
+            }
+        };
+
+        $scope.cancel = function () {
+            document.getElementById('dialog').style.display = 'none';
+        };
+
+        document.getElementById('numberInput').addEventListener('input', function (event) {
+            var value = this.value.replace(/[^0-9]/g, '');
+            this.value = value;
+        });
+
+        $scope.validateInput = function () {
+            var input = $scope.numberInput;
+            $scope.isValid = input >= 200 && Number.isInteger(parseFloat(input));
+        };
     }
 
     angular.module('umbraco')
